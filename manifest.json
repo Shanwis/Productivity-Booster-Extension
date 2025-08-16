@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Remove Shorts and Reels",
+  "version": "1.0",
+  "description": "Removes Shorts on YouTube and Reels on Instagram",
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*", "*://www.instagram.com/*"],
+      "js": ["remove-shorts.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["scripting"]
+}
