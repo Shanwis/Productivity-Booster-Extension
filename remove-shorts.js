@@ -20,11 +20,7 @@ function removeShortsAndReels() {
 
   // Instagram Reels
   hideElements('a[href="/reels/"]');
-  hideElements('a[href$="/reels/"]');
-  hideElements('a[href*="/reel/"]');
-  hideElements('article a[href*="/reel/"]');
-  hideElements('div a[href*="/reel/"]');
-  hideElements('._aagw, ._aagu, ._aagv');
+  hideElements('a[href="/explore/"]');
 }
 
 const observer = new MutationObserver(() => {
