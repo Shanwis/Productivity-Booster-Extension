@@ -23,15 +23,28 @@ function removeShortsAndReels() {
   hideElements('a[href="/explore/"]');
 }
 
-const observer = new MutationObserver(() => {
-  removeShortsAndReels();
+// Observe on if enabled
+chrome.storage.local.get("enabled",({enabled}) =>{
+  if(enabled) {
+    const observer = new MutationObserver(removeShortsAndReels);
+    observer.observe(document.body, {childList:true, subtree: true});
+    removeShortsAndReels();
+  }
 });
 
-// Start observing DOM
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
+//Listen for toggle changes live
 
-// Initial run
-removeShortsAndReels();
+chrome.storage.onChanged.addListener((changes, area) => {
+  if(area === "local" && "enabled" in changes){
+    if(changes.enabled.newValue){
+      if(changes.enabled.newValue){
+        const observer = new MutationObserver(removeShortsAndReels);
+        observer.observe(document.body, {childList: true, subtree: true});
+        removeShortsAndReels();
+      }
+      
+    }else{
+      location.reload();//reset page when disabled
+    }
+  }
+})

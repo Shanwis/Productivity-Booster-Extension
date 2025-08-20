@@ -37,7 +37,39 @@ const rules = [
     }
 ];
 
-chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: rules.map(rule => rule.id),
-    addRules: rules
+function applyRules(enabled){
+    if(enabled){
+        chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: rules.map(rule => rule.id),
+            addRules: rules
+        });
+        chrome.tabs.query({active:true, currentWindow: true}, (tabs) => {
+            let url = tabs[0].url;
+            if(url.includes("youtube.com/shorts/")) {
+                chrome.tabs.update(tabs[0].id, {url: "https://www.youtube.com"});
+            }
+            if(url.includes("instagram.com/reels/") || url.includes("instagram.com/explore/")) {
+                chrome.tabs.update(tabs[0].id, {url: "https://www.instagram.com"});
+            }
+        });
+        
+    }else{
+        chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: rules.map(rule => rule.id),
+            addRules: []
+        });
+    }
+}
+
+chrome.storage.onChanged.addListener((changes,area) => {
+    if(area === "local" && "enabled" in changes) {
+        const enabled = changes.enabled.newValue;
+        applyRules(enabled);
+    }
+});
+
+
+chrome.storage.local.get("enabled", ({enabled}) => {
+    if (enabled === undefined) enabled = true;
+    applyRules(enabled);
 });
